@@ -356,7 +356,7 @@ h4 {
   border-radius: 1px;
 }
 
-.nav__cta {
+.nav__cta { color: #fff !important;
   padding: calc(var(--space-unit) * 1.25) calc(var(--space-unit) * 3) !important;
   font-size: 0.85rem !important;
 }
