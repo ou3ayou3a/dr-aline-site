@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ask Dr. Aline — AI Endodontic Q&A Assistant</title>
+  <meta name="description" content="Ask Dr. Aline's AI assistant about root canal treatment, endodontics, and dental health. Get evidence-based answers around the clock.">
+  <link rel="canonical" href="https://alinesaade.com/ask-dr-aline/">
+
+  <meta property="og:title" content="Ask Dr. Aline — AI Endodontic Q&A">
+  <meta property="og:description" content="Ask general questions about root canal treatment and endodontics. AI-powered, available 24/7.">
+  <meta property="og:url" content="https://alinesaade.com/ask-dr-aline/">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["Person", "Dentist"],
+        "@id": "https://alinesaade.com/#person",
+        "name": "Dr. Aline Saade",
+        "jobTitle": "Specialist Endodontist",
+        "url": "https://alinesaade.com/"
+      },
+      {
+        "@type": "WebApplication",
+        "name": "Ask Dr. Aline — AI Dental Assistant",
+        "url": "https://alinesaade.com/ask-dr-aline/",
+        "description": "AI-powered endodontic Q&A assistant by Dr. Aline Saade",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Web Browser",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://alinesaade.com/" },
+          { "@type": "ListItem", "position": 2, "name": "Ask Dr. Aline" }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <style>
+    .ask-page { padding-top: 80px; min-height: 100vh; display: flex; flex-direction: column; }
+    .ask-hero { text-align: center; padding: calc(var(--space-unit) * 6) 0 calc(var(--space-unit) * 4); }
+
+    .chat-wrapper { max-width: 720px; margin: 0 auto; flex: 1; display: flex; flex-direction: column; }
+
+    .chat-container {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--color-surface);
+      box-shadow: var(--shadow-md);
+      display: flex; flex-direction: column;
+      min-height: 480px; max-height: 60vh;
+    }
+
+    .chat-messages {
+      flex: 1; overflow-y: auto; padding: calc(var(--space-unit) * 3);
+      scroll-behavior: smooth;
+    }
+
+    .message { display: flex; gap: 12px; margin-bottom: calc(var(--space-unit) * 2.5); animation: msgIn 0.35s ease; }
+    .message--user { justify-content: flex-end; }
+    .message__avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--color-accent-light); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; color: var(--color-accent); }
+    .message__bubble { max-width: 78%; padding: 14px 18px; font-size: 0.9375rem; line-height: 1.7; }
+    .message--assistant .message__bubble { background: var(--color-surface-alt); border-radius: 12px 12px 12px 4px; color: var(--color-text-muted); }
+    .message--user .message__bubble { background: var(--color-accent); color: #fff; border-radius: 12px 12px 4px 12px; }
+    .message__bubble a { color: inherit; text-decoration: underline; }
+    .message--assistant .message__bubble a { color: var(--color-accent); }
+
+    .typing { display: flex; gap: 5px; padding: 8px 0; }
+    .typing span { width: 7px; height: 7px; border-radius: 50%; background: var(--color-text-light); animation: bounce 1.4s infinite ease-in-out both; }
+    .typing span:nth-child(2) { animation-delay: 0.16s; }
+    .typing span:nth-child(3) { animation-delay: 0.32s; }
+
+    .chat-input-area {
+      border-top: 1px solid var(--color-border);
+      padding: calc(var(--space-unit) * 2);
+      display: flex; gap: var(--space-unit);
+      background: var(--color-surface);
+    }
+
+    .chat-input-area textarea {
+      flex: 1; border: 1px solid var(--color-border); border-radius: var(--radius);
+      padding: 12px 16px; font-family: var(--font-body); font-size: 0.9375rem;
+      resize: none; max-height: 120px; line-height: 1.5;
+      background: var(--color-bg); color: var(--color-text);
+      transition: border-color var(--transition);
+    }
+    .chat-input-area textarea:focus { outline: none; border-color: var(--color-accent); }
+    .chat-input-area textarea::placeholder { color: var(--color-text-light); }
+
+    .chat-send {
+      background: var(--color-accent); color: #fff; border: none;
+      border-radius: var(--radius); padding: 0 20px;
+      cursor: pointer; transition: all var(--transition);
+      font-weight: 600; font-size: 0.875rem; white-space: nowrap;
+    }
+    .chat-send:hover { background: var(--color-accent-hover); }
+    .chat-send:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .suggested-qs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: calc(var(--space-unit) * 2.5); justify-content: center; }
+    .suggested-q {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: 20px; padding: 8px 16px; font-size: 0.8125rem;
+      color: var(--color-text-muted); cursor: pointer;
+      transition: all var(--transition); font-family: var(--font-body);
+    }
+    .suggested-q:hover { border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-glow); }
+
+    .disclaimer-box {
+      max-width: 720px; margin: calc(var(--space-unit) * 3) auto 0;
+      padding: calc(var(--space-unit) * 2.5); background: var(--color-surface-alt);
+      border-radius: var(--radius); text-align: center;
+      font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.6;
+    }
+    .disclaimer-box a { color: var(--color-accent); }
+
+    .session-counter {
+      text-align: center; margin-top: 12px;
+      font-family: var(--font-mono); font-size: 0.7rem;
+      color: var(--color-text-light); letter-spacing: 0.05em;
+    }
+
+    @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+  </style>
+</head>
+<body>
+
+  <header class="nav">
+    <div class="nav__inner">
+      <a href="/" class="nav__brand">Dr. Aline <span>Saade</span></a>
+      <button class="nav__toggle" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+      <ul class="nav__links">
+        <li><a href="/about/">About</a></li>
+        <li><a href="/research/">Research</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li><a href="/case-gallery/">Cases</a></li>
+        <li><a href="/for-dentists/">For Dentists</a></li>
+        <li><a href="/ask-dr-aline/" class="active">Ask Dr. Aline</a></li>
+        <li><a href="/contact/" class="btn btn--primary nav__cta">Book Consultation</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main class="ask-page">
+
+    <div class="container">
+      <nav class="breadcrumbs"><a href="/">Home</a> <span>/</span> Ask Dr. Aline</nav>
+    </div>
+
+    <div class="container">
+      <div class="ask-hero">
+        <p class="overline mb-2">AI-Powered Assistant</p>
+        <h1 style="font-size: clamp(2rem, 4vw, 3rem);">Ask Dr. Aline</h1>
+        <p class="lead" style="max-width: 540px; margin: calc(var(--space-unit) * 2) auto 0;">
+          Have a question about root canal treatment or endodontics? Ask our AI assistant for general, evidence-based information.
+        </p>
+      </div>
+
+      <div class="chat-wrapper">
+        <div class="chat-container" id="chatContainer">
+          <div class="chat-messages" id="chatMessages">
+            <!-- Welcome -->
+            <div class="message message--assistant">
+              <div class="message__avatar"><img src="/images/avatar-sm.jpg" alt="Dr. Aline" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"></div>
+              <div class="message__bubble">
+                Hello! I'm Dr. Aline's AI assistant. I can help answer general questions about endodontics, root canal treatment, and dental health. How can I help you today?
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <textarea id="chatInput" placeholder="Type your question here…" rows="1" maxlength="500" aria-label="Your question"></textarea>
+            <button class="chat-send" id="chatSend">Send</button>
+          </div>
+        </div>
+
+        <div class="suggested-qs" id="suggestedQs">
+          <button class="suggested-q" data-q="What is a root canal treatment?">What is a root canal?</button>
+          <button class="suggested-q" data-q="How do I know if I need endodontic treatment?">Do I need a root canal?</button>
+          <button class="suggested-q" data-q="What should I do in a dental emergency?">Dental emergency</button>
+          <button class="suggested-q" data-q="What is the difference between a root canal and an extraction?">Root canal vs extraction</button>
+        </div>
+
+        <div class="session-counter" id="sessionCounter">10 questions remaining</div>
+      </div>
+
+      <div class="disclaimer-box">
+        <strong>Important:</strong> This AI assistant provides general dental information only. It does not replace a clinical examination or diagnosis. For personalised advice and treatment, please <a href="/contact/">book an appointment</a> with Dr. Aline.
+      </div>
+    </div>
+
+    <!-- CROSS-LINKS -->
+    <section class="section" style="margin-top: auto;">
+      <div class="container">
+        <div class="grid-3">
+          <a href="/patient-resources/" class="card" style="text-decoration: none;">
+            <div class="card__title">Patient Resources</div>
+            <p class="card__text">Detailed guides on procedures, recovery, and dental care.</p>
+            <span class="card__link">View resources →</span>
+          </a>
+          <a href="/patient-resources/endodontic-faq/" class="card" style="text-decoration: none;">
+            <div class="card__title">Endodontic FAQ</div>
+            <p class="card__text">Comprehensive answers to the most common questions.</p>
+            <span class="card__link">Read FAQ →</span>
+          </a>
+          <a href="/contact/" class="card" style="text-decoration: none;">
+            <div class="card__title">Book a Consultation</div>
+            <p class="card__text">Ready for a professional assessment? Schedule your visit.</p>
+            <span class="card__link">Contact us →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div><div class="footer__brand">Dr. Aline Saade</div><p class="footer__desc">Specialist endodontist and founder of <a href="https://dentexp.com" target="_blank" rel="noopener">Dental Experts Center</a> — Abu Dhabi's JCI-accredited dental clinic.</p></div>
+        <div><h4>Explore</h4><ul class="footer__links"><li><a href="/about/">About</a></li><li><a href="/about/philosophy/">Philosophy</a></li><li><a href="/about/credentials/">Credentials</a></li><li><a href="/research/">Research</a></li><li><a href="/blog/">Blog</a></li></ul></div>
+        <div><h4>Practice</h4><ul class="footer__links"><li><a href="/case-gallery/">Case Gallery</a></li><li><a href="/for-dentists/">For Dentists</a></li><li><a href="/patient-resources/">Patient Resources</a></li><li><a href="/ask-dr-aline/">Ask Dr. Aline</a></li><li><a href="/contact/">Contact</a></li></ul></div>
+        <div><h4>Location</h4><ul class="footer__links"><li>Das Tower, 20th Floor</li><li>Al Bateen Street</li><li>Abu Dhabi, UAE</li><li style="margin-top:12px"><a href="https://dentexp.com" target="_blank" rel="noopener">dentexp.com</a></li><li style="margin-top:8px"><a href="https://www.linkedin.com/in/aline-saade-35688967/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn</a></li></ul></div>
+      </div>
+      <div class="footer__bottom"><span>&copy; 2026 Dr. Aline Saade. All rights reserved.</span><a href="https://dentexp.com" target="_blank" rel="noopener">Dental Experts Center ↗</a></div>
+    </div>
+  </footer>
+
+  <script src="/js/main.js" defer></script>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+
+    const SYSTEM_PROMPT = `You are Dr. Aline's AI dental assistant on her personal website. You provide general educational information about endodontics (root canal treatment), dental health, and oral care.
+
+IDENTITY:
+- You represent Dr. Aline Saade's practice philosophy: evidence-based, patient-centered, compassionate care
+- You are knowledgeable about endodontic procedures, dental anatomy, and oral health
+- You communicate in a warm, professional tone
+
+SCOPE — You CAN discuss:
+- General information about root canal treatment, retreatment, apicoectomy
+- What to expect before, during, and after endodontic procedures
+- Signs and symptoms that may indicate a need for endodontic evaluation
+- General dental anatomy and oral health maintenance
+- The role of technology in modern endodontics (microscopes, CBCT, rotary instruments)
+- General recovery guidance
+- When to see a dentist or specialist
+
+SCOPE — You MUST NOT:
+- Diagnose any condition based on described symptoms
+- Recommend specific treatments for the user's situation
+- Provide specific recovery timelines or numerical claims
+- Use these words: unique, best, guaranteed, pain free, safe, 100%, immediate results, permanent, lifelong, pioneer, first, famous, world renowned, unprecedented, magic, miraculous
+- Prescribe or recommend specific medications
+- Comment on other practitioners' work
+- Make any claims about cure rates or success percentages
+
+RESPONSE STYLE:
+- Keep responses concise (2-4 paragraphs max)
+- Use simple, accessible language
+- When relevant, suggest booking a consultation for personalised advice
+- Be empathetic about dental anxiety
+- Support both English and Arabic questions — respond in the language used
+
+MANDATORY CLOSING (append to EVERY response):
+"This information is for educational purposes only and does not replace a professional dental examination. For personalised advice, please [book a consultation](/contact/) with Dr. Aline."`;
+
+    const MAX_QUESTIONS = 10;
+    let questionCount = 0;
+    let messageHistory = [];
+    let isLoading = false;
+
+    const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const chatSend = document.getElementById('chatSend');
+    const suggestedQs = document.getElementById('suggestedQs');
+    const sessionCounter = document.getElementById('sessionCounter');
+
+    // Auto-resize textarea
+    chatInput.addEventListener('input', () => {
+      chatInput.style.height = 'auto';
+      chatInput.style.height = Math.min(chatInput.scrollHeight, 120) + 'px';
+    });
+
+    // Send on Enter (not Shift+Enter)
+    chatInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+
+    chatSend.addEventListener('click', sendMessage);
+
+    // Suggested questions
+    suggestedQs.querySelectorAll('.suggested-q').forEach(btn => {
+      btn.addEventListener('click', () => {
+        chatInput.value = btn.dataset.q;
+        sendMessage();
+        suggestedQs.style.display = 'none';
+      });
+    });
+
+    async function sendMessage() {
+      const text = chatInput.value.trim();
+      if (!text || isLoading) return;
+
+      if (questionCount >= MAX_QUESTIONS) {
+        addMessage('assistant', 'You\'ve reached the question limit for this session. For more detailed, personalised answers, please <a href="/contact/">book a consultation</a> with Dr. Aline.');
+        return;
+      }
+
+      addMessage('user', text);
+      chatInput.value = '';
+      chatInput.style.height = 'auto';
+      suggestedQs.style.display = 'none';
+
+      messageHistory.push({ role: 'user', content: text });
+
+      isLoading = true;
+      chatSend.disabled = true;
+      const loader = addTypingIndicator();
+
+      try {
+        const response = await callAPI();
+        loader.remove();
+        const assistantText = response;
+        addMessage('assistant', assistantText);
+        messageHistory.push({ role: 'assistant', content: assistantText });
+        questionCount++;
+        sessionCounter.textContent = `${MAX_QUESTIONS - questionCount} questions remaining`;
+      } catch (err) {
+        loader.remove();
+        addMessage('assistant', 'I apologise, but I\'m unable to respond right now. Please try again later or <a href="/contact/">contact Dr. Aline\'s office</a> directly.');
+        console.error('Ask Dr. Aline error:', err);
+      }
+
+      isLoading = false;
+      chatSend.disabled = false;
+      chatInput.focus();
+    }
+
+    async function callAPI() {
+      // -------------------------------------------------------
+      // PRODUCTION: Replace this with your serverless proxy URL
+      // e.g., '/.netlify/functions/ask-dr-aline'
+      //
+      // For DEMO / DEVELOPMENT, you can call the Anthropic API
+      // directly (only do this in a controlled environment):
+      // -------------------------------------------------------
+      const API_URL = '/.netlify/functions/ask-dr-aline';
+
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: messageHistory.slice(-6) // Last 3 exchanges
+        })
+      });
+
+      if (!res.ok) throw new Error(`API ${res.status}`);
+      const data = await res.json();
+
+      // Handle both proxy response shapes
+      if (data.content && Array.isArray(data.content)) {
+        return data.content.filter(b => b.type === 'text').map(b => b.text).join('\n');
+      }
+      return data.response || data.text || 'I was unable to generate a response.';
+    }
+
+    function addMessage(role, content) {
+      const div = document.createElement('div');
+      div.className = `message message--${role}`;
+
+      const htmlContent = content
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>')
+        .replace(/\n/g, '<br>');
+
+      div.innerHTML = role === 'assistant'
+        ? `<div class="message__avatar"><img src="/images/avatar-sm.jpg" alt="Dr. Aline" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"></div><div class="message__bubble">${htmlContent}</div>`
+        : `<div class="message__bubble">${htmlContent}</div>`;
+
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
+    }
+
+    function addTypingIndicator() {
+      const div = document.createElement('div');
+      div.className = 'message message--assistant';
+      div.innerHTML = `<div class="message__avatar"><img src="/images/avatar-sm.jpg" alt="Dr. Aline" style="width:36px;height:36px;border-radius:50%;object-fit:cover;"></div><div class="message__bubble"><div class="typing"><span></span><span></span><span></span></div></div>`;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return div;
+    }
+
+  });
+  </script>
+</body>
+</html>
